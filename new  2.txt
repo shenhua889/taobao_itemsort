@@ -1,0 +1,1323 @@
+function g_srp_getGlobalValue(s, r) {
+    var e = window.g_page_config || {};
+    return s ? e[s] || r : e
+}
+
+function g_srp_getValidFieldNames() {
+    return ["updatebar", "p4p", "header", "tab", "choosecar", "menulist", "shopcombo", "shopcombotip", "shopstar", "sc", "tips", "phonenav", "spuseries", "vbaby", "brandbang", "nav", "related", "sortbar", "personalbar", "apasstips", "spucombo", "itemlist", "noresult", "navtablink", "pager", "bottomsearch", "feedback", "supertab", "sctabframe", "debugbar"]
+}
+
+function g_srp_setPageUI(s, r) {
+    Search.set("pageConfig_" + s, {
+        pageName: s,
+        modMap: r
+    })
+}
+
+function g_srp_getPageUI(s) {
+    s = s || "";
+    var r = Search.get("pageConfig_" + s) || {};
+    return r
+}
+
+function g_srp_getInitMods() {
+    if (!g_srp_getInitMods.__return) {
+        var s = Search.get("appName"),
+            r = g_srp_getGlobalValue("pageName", ""),
+            e = g_srp_getPageUI(r),
+            p = e.modMap || {},
+            i = g_srp_getGlobalValue("mods", {}),
+            a = [],
+            n = [],
+            c = KISSY.keys(p),
+            t = g_srp_getValidFieldNames(),
+            u = t.concat(c);
+        u = KISSY.unique(u), KISSY.each(u, function (e) {
+            if (i[e]) {
+                var c, t = p[e];
+                c = t ? s + "/p/" + r + "/" + t : s + "/c/ui/" + e + "/", a.push(c), n.push({
+                    name: e
+                })
+            }
+        }), g_srp_getInitMods.__return = {
+            appInitName: [s + "/p/" + r + "/app"],
+            modInitNames: a,
+            modsConfig: n
+        }
+    }
+    return g_srp_getInitMods.__return
+}
+
+function g_srp_loadCss() {
+    var s = g_srp_getInitMods(),
+        r = s.appInitName,
+        e = s.modInitNames,
+        p = r.concat(e);
+    KISSY.importStyle(p)
+}
+
+function g_srp_init() {
+    var s = g_srp_getInitMods(),
+        r = s.appInitName,
+        e = s.modInitNames,
+        p = r.concat(e),
+        i = s.modsConfig;
+    KISSY.use(p, function (s, r) {
+        var p = arguments;
+        KISSY.ready(function () {
+            var a = g_srp_getGlobalValue();
+            window.g_page_config = null;
+            var n = 2;
+            s.each(e, function (s, r) {
+                i[r].CONSTRUCTOR = p[n + r]
+            }), a.modsConfig = i;
+            var c = new r({
+                el: "#main",
+                data: a
+            });
+            Search.set("app", c)
+        })
+    })
+}! function (s, r) {
+    function e(r) {
+        var e = s.Config && s.Config.packages && s.Config.packages.srp && s.Config.packages.srp.base || r.base;
+        (-1 !== e.indexOf("taobao.net") || -1 !== e.indexOf("waptest")) && s.config({
+            packages: [{
+                name: "tbc",
+                path: "http://g.assets.daily.taobao.net/tbc/",
+                ignorePackageNameInUri: !0
+            }]
+        }), s.config({
+            modules: {
+                lazyload: {
+                    alias: "gallery/lazyload/1.0/"
+                }
+            }
+        })
+    }
+    var p = r.Search = r.Search || {};
+    p.config = function (r) {
+        if (!r || !r.name || !r.base || "undefined" === r.combine) throw new Error("Search.config options error");
+        s.log("config Search"), s.log("xcake.base:" + r.base), s.log("xcake.name:" + r.name), s.log("xcake.combine:" + r.combine), s.config({
+            combine: r.combine,
+            comboMaxFileNum: 40,
+            packages: [{
+                name: r.name,
+                base: r.base,
+                ignorePackageNameInUri: !0,
+                debug: !0,
+                combine: r.combine
+            }]
+        }), p.set("appName", r.name), e(r), KISSY.config("modules", {
+            "srp/_0": {
+                requires: ["srp/_1", "srp/_2", "srp/_1f", "srp/_1d", "srp/_1g", "srp/_1e", "srp/_5", "srp/_3", "srp/_9", "srp/_6", "xtemplate/runtime"]
+            },
+            "srp/_1": {
+                requires: ["srp/c/app/base.css", "node", "event", "base"]
+            },
+            "srp/_2": {
+                requires: ["srp/_1h"]
+            },
+            "srp/_3": {
+                requires: ["srp/_7"]
+            },
+            "srp/_4": {
+                requires: ["srp/_1"]
+            },
+            "srp/_5": {
+                requires: ["io", "ua"]
+            },
+            "srp/_6": {
+                requires: ["srp/c/app/responsive.css"]
+            },
+            "srp/_9": {
+                requires: ["srp/c/libs/nprogress/nprogress.css"]
+            },
+            "srp/_a": {
+                requires: ["srp/c/ui/apasstips/index.css", "srp/_4", "xtemplate/runtime"]
+            },
+            "srp/_b": {
+                requires: ["srp/c/ui/bottomsearch/index.css", "srp/_4", "xtemplate/runtime"]
+            },
+            "srp/_c": {
+                requires: ["srp/c/ui/brandbang/index.css", "srp/_4", "xtemplate/runtime"]
+            },
+            "srp/_d": {
+                requires: ["srp/c/ui/choosecar/index.css", "srp/_4", "xtemplate/runtime", "io", "srp/_1e", "node"]
+            },
+            "srp/_e": {
+                requires: ["srp/c/ui/debugbar/index.css", "srp/_4", "xtemplate/runtime", "dom", "event", "cookie"]
+            },
+            "srp/_f": {
+                requires: ["srp/c/ui/feedback/advice2visual/index.css", "xtemplate/runtime", "srp/_g", "srp/_8", "srp/_h", "tbc/mini-login/1.4.2/index"]
+            },
+            "srp/_h": {
+                requires: ["srp/_4"]
+            },
+            "srp/_i": {
+                requires: ["srp/c/ui/feedback/index.css", "srp/_4", "xtemplate/runtime", "srp/_j", "dom", "event"]
+            },
+            "srp/_k": {
+                requires: ["srp/c/ui/header/index.css", "node", "ua", "cookie", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_l": {
+                requires: ["srp/c/ui/itemlist/index.css", "xtemplate/runtime", "srp/_1g", "io", "node", "datalazyload", "srp/_1j", "srp/_1l", "srp/_4", "srp/c/ui/itemlist/thumb/index.css", "srp/_1k"]
+            },
+            "srp/_m": {
+                requires: ["srp/c/ui/menulist/index.css", "srp/_4", "xtemplate/runtime"]
+            },
+            "srp/_n": {
+                requires: ["srp/c/ui/nav/index.css", "node", "srp/_1i", "xtemplate/runtime", "srp/_1e", "srp/_4", "srp/c/ui/nav/breadcrumbs/index.css", "srp/c/ui/nav/common/index.css", "event", "srp/c/ui/nav/overlay/index.css", "ua"]
+            },
+            "srp/_o": {
+                requires: ["srp/c/ui/navtablink/index.css", "srp/_4", "xtemplate/runtime", "io", "srp/c/ui/navtablink/popup/index.css", "srp/_1k"]
+            },
+            "srp/_p": {
+                requires: ["srp/c/ui/noresult/index.css", "srp/_4", "xtemplate/runtime"]
+            },
+            "srp/_q": {
+                requires: ["srp/c/ui/p4p/index.css", "srp/_4", "datalazyload"]
+            },
+            "srp/_r": {
+                requires: ["srp/c/ui/pager/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_s": {
+                requires: ["srp/c/ui/personalbar/index.css", "srp/_4", "xtemplate/runtime", "srp/_1i"]
+            },
+            "srp/_t": {
+                requires: ["srp/c/ui/phonenav/index.css", "srp/_4", "xtemplate/runtime"]
+            },
+            "srp/_u": {
+                requires: ["srp/c/ui/related/index.css", "srp/_4", "xtemplate/runtime"]
+            },
+            "srp/_v": {
+                requires: ["srp/c/ui/sc/index.css", "xtemplate/runtime", "srp/_4", "dom", "srp/c/ui/sc/birthday/index.css"]
+            },
+            "srp/_10": {
+                requires: ["srp/c/ui/sctabframe/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_11": {
+                requires: ["srp/c/ui/shopcombo/index.css", "srp/_4", "xtemplate/runtime"]
+            },
+            "srp/_12": {
+                requires: ["srp/c/ui/shopcombotip/index.css", "srp/_4", "xtemplate/runtime"]
+            },
+            "srp/_13": {
+                requires: ["srp/c/ui/shopstar/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_14": {
+                requires: ["srp/c/ui/sortbar/index.css", "xtemplate/runtime", "srp/_4", "srp/c/ui/sortbar/price-rank/index.css", "dom", "overlay"]
+            },
+            "srp/_15": {
+                requires: ["srp/c/ui/spucombo/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_16": {
+                requires: ["srp/c/ui/spuseries/index.css", "xtemplate/runtime", "srp/_4", "base"]
+            },
+            "srp/_17": {
+                requires: ["srp/c/ui/supertab/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_18": {
+                requires: ["srp/c/ui/tab/index.css", "srp/_4", "xtemplate/runtime"]
+            },
+            "srp/_19": {
+                requires: ["srp/c/ui/tips/index.css", "srp/_4", "xtemplate/runtime"]
+            },
+            "srp/_1a": {
+                requires: ["srp/c/ui/updatebar/index.css", "srp/_4", "cookie", "xtemplate/runtime"]
+            },
+            "srp/_1b": {
+                requires: ["srp/c/ui/vbaby/index.css", "node", "xtemplate/runtime", "io", "srp/_4"]
+            },
+            "srp/_1c": {
+                requires: ["dom"]
+            },
+            "srp/_1d": {
+                requires: ["srp/_2"]
+            },
+            "srp/_1e": {
+                requires: ["node", "ua"]
+            },
+            "srp/_1f": {
+                requires: ["json"]
+            },
+            "srp/_1g": {
+                requires: ["event", "dom", "ua"]
+            },
+            "srp/_1i": {
+                requires: ["srp/c/widgets/baike/index.css", "base", "xtemplate/runtime", "node", "json"]
+            },
+            "srp/_1j": {
+                requires: ["srp/c/widgets/icon-popup/index.css", "xtemplate/runtime", "srp/_1k"]
+            },
+            "srp/_1k": {
+                requires: ["overlay"]
+            },
+            "srp/_1l": {
+                requires: ["srp/c/widgets/shopcard/index.css", "io", "xtemplate/runtime", "srp/_1k"]
+            },
+            "srp/_1m": {
+                requires: ["srp/_0", "srp/c/icons/btn.css", "srp/c/icons/service.css", "srp/c/icons/supple.css", "srp/c/icons/fest.css", "xtemplate/runtime", "srp/_22"]
+            },
+            "srp/_1n": {
+                requires: ["srp/p/bang/c/bswitch/index.css", "xtemplate/runtime", "srp/_1o", "srp/_4"]
+            },
+            "srp/_1p": {
+                requires: ["xtemplate/runtime", "srp/_1q", "srp/_4"]
+            },
+            "srp/_1r": {
+                requires: ["srp/p/bang/c/header/index.css", "node", "ua", "cookie", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_1s": {
+                requires: ["srp/p/bang/c/nav/index.css", "node", "xtemplate/runtime", "srp/_1e", "srp/_4", "srp/p/bang/c/nav/breadcrumbs/index.css", "srp/p/bang/c/nav/common/index.css", "event"]
+            },
+            "srp/_1t": {
+                requires: ["srp/p/bang/c/pager/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_1u": {
+                requires: ["srp/p/bang/c/tubang/index.css", "xtemplate/runtime", "srp/_1v", "srp/_4"]
+            },
+            "srp/_20": {
+                requires: ["srp/p/bang/c/wbang/index.css", "xtemplate/runtime", "srp/_21", "srp/_4"]
+            },
+            "srp/_23": {
+                requires: ["srp/_0", "srp/p/bigtabsrp/app.css", "srp/c/icons/btn.css", "srp/c/icons/service.css", "srp/c/icons/supple.css", "srp/c/icons/fest.css", "xtemplate/runtime"]
+            },
+            "srp/_24": {
+                requires: ["srp/_0", "srp/p/find-brand/app.css", "srp/c/icons/btn.css", "srp/c/icons/service.css", "srp/c/icons/supple.css", "srp/c/icons/fest.css", "xtemplate/runtime"]
+            },
+            "srp/_25": {
+                requires: ["srp/p/find-brand/c/brand-detail/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_26": {
+                requires: ["srp/p/find-brand/c/brand-record/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_27": {
+                requires: ["srp/p/find-brand/c/discussion/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_28": {
+                requires: ["srp/p/find-brand/c/evaluate/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_29": {
+                requires: ["srp/p/find-brand/c/header/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_2a": {
+                requires: ["srp/p/find-brand/c/info/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_2b": {
+                requires: ["srp/p/find-brand/c/ranking-list/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_2c": {
+                requires: ["srp/p/find-brand/c/star-product/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_2d": {
+                requires: ["srp/_0", "srp/p/i2i/app.css", "srp/c/icons/btn.css", "srp/c/icons/service.css", "srp/c/icons/supple.css", "srp/c/icons/fest.css", "xtemplate/runtime"]
+            },
+            "srp/_2e": {
+                requires: ["srp/p/i2i/c/recitem/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_2f": {
+                requires: ["srp/p/i2i/c/singleauction/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_2g": {
+                requires: ["srp/p/i2i/c/sortbar/index.css", "ua", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_2h": {
+                requires: ["srp/_0", "srp/c/icons/btn.css", "srp/c/icons/service.css", "srp/c/icons/supple.css", "srp/c/icons/fest.css", "xtemplate/runtime"]
+            },
+            "srp/_2i": {
+                requires: ["srp/_0", "srp/c/icons/btn.css", "srp/c/icons/service.css", "srp/c/icons/supple.css", "srp/c/icons/fest.css", "xtemplate/runtime"]
+            },
+            "srp/_2j": {
+                requires: ["srp/p/mysearch/c/explain/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_2k": {
+                requires: ["srp/p/mysearch/c/grid/index.css", "xtemplate/runtime", "srp/_4", "datalazyload", "io", "srp/_1g"]
+            },
+            "srp/_2l": {
+                requires: ["srp/p/mysearch/c/myblock/index.css", "xtemplate/runtime", "srp/_4", "ua"]
+            },
+            "srp/_2m": {
+                requires: ["srp/p/mysearch/c/nav/index.css", "node", "srp/_1i", "xtemplate/runtime", "srp/_1e", "srp/_4", "srp/p/mysearch/c/nav/breadcrumbs/index.css", "srp/p/mysearch/c/nav/common/index.css", "event", "srp/p/mysearch/c/nav/overlay/index.css"]
+            },
+            "srp/_2n": {
+                requires: ["srp/_0", "srp/c/icons/btn.css", "srp/c/icons/service.css", "srp/c/icons/supple.css", "srp/c/icons/fest.css", "xtemplate/runtime"]
+            },
+            "srp/_2o": {
+                requires: ["srp/p/page0/c/desc/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_2p": {
+                requires: ["srp/p/page0/c/itemlist/index.css", "datalazyload", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/c/app/app-base": {
+                alias: "srp/_0"
+            },
+            "srp/c/app/base": {
+                alias: "srp/_1"
+            },
+            "srp/c/app/env": {
+                alias: "srp/_2"
+            },
+            "srp/c/app/history": {
+                alias: "srp/_3"
+            },
+            "srp/c/app/mod-base": {
+                alias: "srp/_4"
+            },
+            "srp/c/app/requester": {
+                alias: "srp/_5"
+            },
+            "srp/c/app/responsive": {
+                alias: "srp/_6"
+            },
+            "srp/c/libs/history": {
+                alias: "srp/_7"
+            },
+            "srp/c/libs/html2canvas": {
+                alias: "srp/_8"
+            },
+            "srp/c/libs/nprogress/nprogress": {
+                alias: "srp/_9"
+            },
+            "srp/c/ui/apasstips/index": {
+                alias: "srp/_a"
+            },
+            "srp/c/ui/bottomsearch/index": {
+                alias: "srp/_b"
+            },
+            "srp/c/ui/brandbang/index": {
+                alias: "srp/_c"
+            },
+            "srp/c/ui/choosecar/index": {
+                alias: "srp/_d"
+            },
+            "srp/c/ui/debugbar/index": {
+                alias: "srp/_e"
+            },
+            "srp/c/ui/feedback/advice2visual/index": {
+                alias: "srp/_f"
+            },
+            "srp/c/ui/feedback/advice2visual/index.xtpl": {
+                alias: "srp/_g"
+            },
+            "srp/c/ui/feedback/advice2visual/panel": {
+                alias: "srp/_h"
+            },
+            "srp/c/ui/feedback/index": {
+                alias: "srp/_i"
+            },
+            "srp/c/ui/feedback/tpl/index.xtpl": {
+                alias: "srp/_j"
+            },
+            "srp/c/ui/header/index": {
+                alias: "srp/_k"
+            },
+            "srp/c/ui/itemlist/index": {
+                alias: "srp/_l"
+            },
+            "srp/c/ui/menulist/index": {
+                alias: "srp/_m"
+            },
+            "srp/c/ui/nav/index": {
+                alias: "srp/_n"
+            },
+            "srp/c/ui/navtablink/index": {
+                alias: "srp/_o"
+            },
+            "srp/c/ui/noresult/index": {
+                alias: "srp/_p"
+            },
+            "srp/c/ui/p4p/index": {
+                alias: "srp/_q"
+            },
+            "srp/c/ui/pager/index": {
+                alias: "srp/_r"
+            },
+            "srp/c/ui/personalbar/index": {
+                alias: "srp/_s"
+            },
+            "srp/c/ui/phonenav/index": {
+                alias: "srp/_t"
+            },
+            "srp/c/ui/related/index": {
+                alias: "srp/_u"
+            },
+            "srp/c/ui/sc/index": {
+                alias: "srp/_v"
+            },
+            "srp/c/ui/sctabframe/index": {
+                alias: "srp/_10"
+            },
+            "srp/c/ui/shopcombo/index": {
+                alias: "srp/_11"
+            },
+            "srp/c/ui/shopcombotip/index": {
+                alias: "srp/_12"
+            },
+            "srp/c/ui/shopstar/index": {
+                alias: "srp/_13"
+            },
+            "srp/c/ui/sortbar/index": {
+                alias: "srp/_14"
+            },
+            "srp/c/ui/spucombo/index": {
+                alias: "srp/_15"
+            },
+            "srp/c/ui/spuseries/index": {
+                alias: "srp/_16"
+            },
+            "srp/c/ui/supertab/index": {
+                alias: "srp/_17"
+            },
+            "srp/c/ui/tab/index": {
+                alias: "srp/_18"
+            },
+            "srp/c/ui/tips/index": {
+                alias: "srp/_19"
+            },
+            "srp/c/ui/updatebar/index": {
+                alias: "srp/_1a"
+            },
+            "srp/c/ui/vbaby/index": {
+                alias: "srp/_1b"
+            },
+            "srp/c/utils/imgmagic": {
+                alias: "srp/_1c"
+            },
+            "srp/c/utils/logger": {
+                alias: "srp/_1d"
+            },
+            "srp/c/utils/stat": {
+                alias: "srp/_1e"
+            },
+            "srp/c/utils/timing": {
+                alias: "srp/_1f"
+            },
+            "srp/c/utils/utils": {
+                alias: "srp/_1g"
+            },
+            "srp/c/utils/webp": {
+                alias: "srp/_1h"
+            },
+            "srp/c/widgets/baike/index": {
+                alias: "srp/_1i"
+            },
+            "srp/c/widgets/icon-popup/index": {
+                alias: "srp/_1j"
+            },
+            "srp/c/widgets/popup/index": {
+                alias: "srp/_1k"
+            },
+            "srp/c/widgets/shopcard/index": {
+                alias: "srp/_1l"
+            },
+            "srp/p/bang/app": {
+                alias: "srp/_1m"
+            },
+            "srp/p/bang/c/bswitch/index": {
+                alias: "srp/_1n"
+            },
+            "srp/p/bang/c/bswitch/tpl.xtpl": {
+                alias: "srp/_1o"
+            },
+            "srp/p/bang/c/cstyle/index": {
+                alias: "srp/_1p"
+            },
+            "srp/p/bang/c/cstyle/tpl.xtpl": {
+                alias: "srp/_1q"
+            },
+            "srp/p/bang/c/header/index": {
+                alias: "srp/_1r"
+            },
+            "srp/p/bang/c/nav/index": {
+                alias: "srp/_1s"
+            },
+            "srp/p/bang/c/pager/index": {
+                alias: "srp/_1t"
+            },
+            "srp/p/bang/c/tubang/index": {
+                alias: "srp/_1u"
+            },
+            "srp/p/bang/c/tubang/tpl.xtpl": {
+                alias: "srp/_1v"
+            },
+            "srp/p/bang/c/wbang/index": {
+                alias: "srp/_20"
+            },
+            "srp/p/bang/c/wbang/tpl.xtpl": {
+                alias: "srp/_21"
+            },
+            "srp/p/bang/layout.xtpl": {
+                alias: "srp/_22"
+            },
+            "srp/p/bigtabsrp/app": {
+                alias: "srp/_23"
+            },
+            "srp/p/find-brand/app": {
+                alias: "srp/_24"
+            },
+            "srp/p/find-brand/c/brand-detail/index": {
+                alias: "srp/_25"
+            },
+            "srp/p/find-brand/c/brand-record/index": {
+                alias: "srp/_26"
+            },
+            "srp/p/find-brand/c/discussion/index": {
+                alias: "srp/_27"
+            },
+            "srp/p/find-brand/c/evaluate/index": {
+                alias: "srp/_28"
+            },
+            "srp/p/find-brand/c/header/index": {
+                alias: "srp/_29"
+            },
+            "srp/p/find-brand/c/info/index": {
+                alias: "srp/_2a"
+            },
+            "srp/p/find-brand/c/ranking-list/index": {
+                alias: "srp/_2b"
+            },
+            "srp/p/find-brand/c/star-product/index": {
+                alias: "srp/_2c"
+            },
+            "srp/p/i2i/app": {
+                alias: "srp/_2d"
+            },
+            "srp/p/i2i/c/recitem/index": {
+                alias: "srp/_2e"
+            },
+            "srp/p/i2i/c/singleauction/index": {
+                alias: "srp/_2f"
+            },
+            "srp/p/i2i/c/sortbar/index": {
+                alias: "srp/_2g"
+            },
+            "srp/p/mainsrp/app": {
+                alias: "srp/_2h"
+            },
+            "srp/p/mysearch/app": {
+                alias: "srp/_2i"
+            },
+            "srp/p/mysearch/c/explain/index": {
+                alias: "srp/_2j"
+            },
+            "srp/p/mysearch/c/grid/index": {
+                alias: "srp/_2k"
+            },
+            "srp/p/mysearch/c/myblock/index": {
+                alias: "srp/_2l"
+            },
+            "srp/p/mysearch/c/nav/index": {
+                alias: "srp/_2m"
+            },
+            "srp/p/page0/app": {
+                alias: "srp/_2n"
+            },
+            "srp/p/page0/c/desc/index": {
+                alias: "srp/_2o"
+            },
+            "srp/p/page0/c/itemlist/index": {
+                alias: "srp/_2p"
+            }
+        })
+    };
+    var i = {};
+    p.set = function (s, r) {
+        i[s] = r
+    }, p.get = function (s) {
+        return i[s]
+    }
+}(KISSY, this), g_srp_setPageUI("page0", {
+    itemlist: "c/itemlist/",
+    desc: "c/desc/"
+}), g_srp_setPageUI("mysearch", {
+    myblock: "c/myblock/",
+    explain: "c/explain/",
+    nav: "c/nav/",
+    grid: "c/grid/"
+}), g_srp_setPageUI("i2i", {
+    singleauction: "c/singleauction/",
+    sortbar: "c/sortbar/",
+    recitem: "c/recitem/"
+}), g_srp_setPageUI("floor", {
+    floors: "c/floors/"
+}), g_srp_setPageUI("find-brand", {
+    header: "c/header/",
+    "brand-detail": "c/brand-detail/",
+    discussion: "c/discussion/",
+    evaluate: "c/evaluate/",
+    "star-product": "c/star-product/",
+    "brand-record": "c/brand-record/",
+    "ranking-list": "c/ranking-list/",
+    info: "c/info/"
+}), g_srp_setPageUI("bang", {
+    tubang: "c/tubang/",
+    header: "c/header/",
+    cstyle: "c/cstyle/",
+    wbang: "c/wbang/",
+    nav: "c/nav/",
+    pager: "c/pager/",
+    bswitch: "c/bswitch/"
+});
+
+function g_srp_getGlobalValue(s, r) {
+    var e = window.g_page_config || {};
+    return s ? e[s] || r : e
+}
+
+function g_srp_getValidFieldNames() {
+    return ["updatebar", "p4p", "header", "tab", "choosecar", "menulist", "shopcombo", "shopcombotip", "shopstar", "sc", "tips", "phonenav", "spuseries", "vbaby", "brandbang", "nav", "related", "sortbar", "personalbar", "apasstips", "spucombo", "itemlist", "noresult", "navtablink", "pager", "bottomsearch", "feedback", "supertab", "sctabframe", "debugbar"]
+}
+
+function g_srp_setPageUI(s, r) {
+    Search.set("pageConfig_" + s, {
+        pageName: s,
+        modMap: r
+    })
+}
+
+function g_srp_getPageUI(s) {
+    s = s || "";
+    var r = Search.get("pageConfig_" + s) || {};
+    return r
+}
+
+function g_srp_getInitMods() {
+    if (!g_srp_getInitMods.__return) {
+        var s = Search.get("appName"),
+            r = g_srp_getGlobalValue("pageName", ""),
+            e = g_srp_getPageUI(r),
+            p = e.modMap || {},
+            i = g_srp_getGlobalValue("mods", {}),
+            a = [],
+            n = [],
+            c = KISSY.keys(p),
+            t = g_srp_getValidFieldNames(),
+            u = t.concat(c);
+        u = KISSY.unique(u), KISSY.each(u, function (e) {
+            if (i[e]) {
+                var c, t = p[e];
+                c = t ? s + "/p/" + r + "/" + t : s + "/c/ui/" + e + "/", a.push(c), n.push({
+                    name: e
+                })
+            }
+        }), g_srp_getInitMods.__return = {
+            appInitName: [s + "/p/" + r + "/app"],
+            modInitNames: a,
+            modsConfig: n
+        }
+    }
+    return g_srp_getInitMods.__return
+}
+
+function g_srp_loadCss() {
+    var s = g_srp_getInitMods(),
+        r = s.appInitName,
+        e = s.modInitNames,
+        p = r.concat(e);
+    KISSY.importStyle(p)
+}
+
+function g_srp_init() {
+    var s = g_srp_getInitMods(),
+        r = s.appInitName,
+        e = s.modInitNames,
+        p = r.concat(e),
+        i = s.modsConfig;
+    KISSY.use(p, function (s, r) {
+        var p = arguments;
+        KISSY.ready(function () {
+            var a = g_srp_getGlobalValue();
+            window.g_page_config = null;
+            var n = 2;
+            s.each(e, function (s, r) {
+                i[r].CONSTRUCTOR = p[n + r]
+            }), a.modsConfig = i;
+            var c = new r({
+                el: "#main",
+                data: a
+            });
+            Search.set("app", c)
+        })
+    })
+}! function (s, r) {
+    function e(r) {
+        var e = s.Config && s.Config.packages && s.Config.packages.srp && s.Config.packages.srp.base || r.base;
+        (-1 !== e.indexOf("taobao.net") || -1 !== e.indexOf("waptest")) && s.config({
+            packages: [{
+                name: "tbc",
+                path: "http://g.assets.daily.taobao.net/tbc/",
+                ignorePackageNameInUri: !0
+            }]
+        }), s.config({
+            modules: {
+                lazyload: {
+                    alias: "gallery/lazyload/1.0/"
+                }
+            }
+        })
+    }
+    var p = r.Search = r.Search || {};
+    p.config = function (r) {
+        if (!r || !r.name || !r.base || "undefined" === r.combine) throw new Error("Search.config options error");
+        s.log("config Search"), s.log("xcake.base:" + r.base), s.log("xcake.name:" + r.name), s.log("xcake.combine:" + r.combine), s.config({
+            combine: r.combine,
+            comboMaxFileNum: 40,
+            packages: [{
+                name: r.name,
+                base: r.base,
+                ignorePackageNameInUri: !0,
+                debug: !0,
+                combine: r.combine
+            }]
+        }), p.set("appName", r.name), e(r), KISSY.config("modules", {
+            "srp/_0": {
+                requires: ["srp/_1", "srp/_2", "srp/_1f", "srp/_1d", "srp/_1g", "srp/_1e", "srp/_5", "srp/_3", "srp/_9", "srp/_6", "xtemplate/runtime"]
+            },
+            "srp/_1": {
+                requires: ["srp/c/app/base.css", "node", "event", "base"]
+            },
+            "srp/_2": {
+                requires: ["srp/_1h"]
+            },
+            "srp/_3": {
+                requires: ["srp/_7"]
+            },
+            "srp/_4": {
+                requires: ["srp/_1"]
+            },
+            "srp/_5": {
+                requires: ["io", "ua"]
+            },
+            "srp/_6": {
+                requires: ["srp/c/app/responsive.css"]
+            },
+            "srp/_9": {
+                requires: ["srp/c/libs/nprogress/nprogress.css"]
+            },
+            "srp/_a": {
+                requires: ["srp/c/ui/apasstips/index.css", "srp/_4", "xtemplate/runtime"]
+            },
+            "srp/_b": {
+                requires: ["srp/c/ui/bottomsearch/index.css", "srp/_4", "xtemplate/runtime"]
+            },
+            "srp/_c": {
+                requires: ["srp/c/ui/brandbang/index.css", "srp/_4", "xtemplate/runtime"]
+            },
+            "srp/_d": {
+                requires: ["srp/c/ui/choosecar/index.css", "srp/_4", "xtemplate/runtime", "io", "srp/_1e", "node"]
+            },
+            "srp/_e": {
+                requires: ["srp/c/ui/debugbar/index.css", "srp/_4", "xtemplate/runtime", "dom", "event", "cookie"]
+            },
+            "srp/_f": {
+                requires: ["srp/c/ui/feedback/advice2visual/index.css", "xtemplate/runtime", "srp/_g", "srp/_8", "srp/_h", "tbc/mini-login/1.4.2/index"]
+            },
+            "srp/_h": {
+                requires: ["srp/_4"]
+            },
+            "srp/_i": {
+                requires: ["srp/c/ui/feedback/index.css", "srp/_4", "xtemplate/runtime", "srp/_j", "dom", "event"]
+            },
+            "srp/_k": {
+                requires: ["srp/c/ui/header/index.css", "node", "ua", "cookie", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_l": {
+                requires: ["srp/c/ui/itemlist/index.css", "xtemplate/runtime", "srp/_1g", "io", "node", "datalazyload", "srp/_1j", "srp/_1l", "srp/_4", "srp/c/ui/itemlist/thumb/index.css", "srp/_1k"]
+            },
+            "srp/_m": {
+                requires: ["srp/c/ui/menulist/index.css", "srp/_4", "xtemplate/runtime"]
+            },
+            "srp/_n": {
+                requires: ["srp/c/ui/nav/index.css", "node", "srp/_1i", "xtemplate/runtime", "srp/_1e", "srp/_4", "srp/c/ui/nav/breadcrumbs/index.css", "srp/c/ui/nav/common/index.css", "event", "srp/c/ui/nav/overlay/index.css", "ua"]
+            },
+            "srp/_o": {
+                requires: ["srp/c/ui/navtablink/index.css", "srp/_4", "xtemplate/runtime", "io", "srp/c/ui/navtablink/popup/index.css", "srp/_1k"]
+            },
+            "srp/_p": {
+                requires: ["srp/c/ui/noresult/index.css", "srp/_4", "xtemplate/runtime"]
+            },
+            "srp/_q": {
+                requires: ["srp/c/ui/p4p/index.css", "srp/_4", "datalazyload"]
+            },
+            "srp/_r": {
+                requires: ["srp/c/ui/pager/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_s": {
+                requires: ["srp/c/ui/personalbar/index.css", "srp/_4", "xtemplate/runtime", "srp/_1i"]
+            },
+            "srp/_t": {
+                requires: ["srp/c/ui/phonenav/index.css", "srp/_4", "xtemplate/runtime"]
+            },
+            "srp/_u": {
+                requires: ["srp/c/ui/related/index.css", "srp/_4", "xtemplate/runtime"]
+            },
+            "srp/_v": {
+                requires: ["srp/c/ui/sc/index.css", "xtemplate/runtime", "srp/_4", "dom", "srp/c/ui/sc/birthday/index.css"]
+            },
+            "srp/_10": {
+                requires: ["srp/c/ui/sctabframe/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_11": {
+                requires: ["srp/c/ui/shopcombo/index.css", "srp/_4", "xtemplate/runtime"]
+            },
+            "srp/_12": {
+                requires: ["srp/c/ui/shopcombotip/index.css", "srp/_4", "xtemplate/runtime"]
+            },
+            "srp/_13": {
+                requires: ["srp/c/ui/shopstar/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_14": {
+                requires: ["srp/c/ui/sortbar/index.css", "xtemplate/runtime", "srp/_4", "srp/c/ui/sortbar/price-rank/index.css", "dom", "overlay"]
+            },
+            "srp/_15": {
+                requires: ["srp/c/ui/spucombo/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_16": {
+                requires: ["srp/c/ui/spuseries/index.css", "xtemplate/runtime", "srp/_4", "base"]
+            },
+            "srp/_17": {
+                requires: ["srp/c/ui/supertab/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_18": {
+                requires: ["srp/c/ui/tab/index.css", "srp/_4", "xtemplate/runtime"]
+            },
+            "srp/_19": {
+                requires: ["srp/c/ui/tips/index.css", "srp/_4", "xtemplate/runtime"]
+            },
+            "srp/_1a": {
+                requires: ["srp/c/ui/updatebar/index.css", "srp/_4", "cookie", "xtemplate/runtime"]
+            },
+            "srp/_1b": {
+                requires: ["srp/c/ui/vbaby/index.css", "node", "xtemplate/runtime", "io", "srp/_4"]
+            },
+            "srp/_1c": {
+                requires: ["dom"]
+            },
+            "srp/_1d": {
+                requires: ["srp/_2"]
+            },
+            "srp/_1e": {
+                requires: ["node", "ua"]
+            },
+            "srp/_1f": {
+                requires: ["json"]
+            },
+            "srp/_1g": {
+                requires: ["event", "dom", "ua"]
+            },
+            "srp/_1i": {
+                requires: ["srp/c/widgets/baike/index.css", "base", "xtemplate/runtime", "node", "json"]
+            },
+            "srp/_1j": {
+                requires: ["srp/c/widgets/icon-popup/index.css", "xtemplate/runtime", "srp/_1k"]
+            },
+            "srp/_1k": {
+                requires: ["overlay"]
+            },
+            "srp/_1l": {
+                requires: ["srp/c/widgets/shopcard/index.css", "io", "xtemplate/runtime", "srp/_1k"]
+            },
+            "srp/_1m": {
+                requires: ["srp/_0", "srp/c/icons/btn.css", "srp/c/icons/service.css", "srp/c/icons/supple.css", "srp/c/icons/fest.css", "xtemplate/runtime", "srp/_22"]
+            },
+            "srp/_1n": {
+                requires: ["srp/p/bang/c/bswitch/index.css", "xtemplate/runtime", "srp/_1o", "srp/_4"]
+            },
+            "srp/_1p": {
+                requires: ["xtemplate/runtime", "srp/_1q", "srp/_4"]
+            },
+            "srp/_1r": {
+                requires: ["srp/p/bang/c/header/index.css", "node", "ua", "cookie", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_1s": {
+                requires: ["srp/p/bang/c/nav/index.css", "node", "xtemplate/runtime", "srp/_1e", "srp/_4", "srp/p/bang/c/nav/breadcrumbs/index.css", "srp/p/bang/c/nav/common/index.css", "event"]
+            },
+            "srp/_1t": {
+                requires: ["srp/p/bang/c/pager/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_1u": {
+                requires: ["srp/p/bang/c/tubang/index.css", "xtemplate/runtime", "srp/_1v", "srp/_4"]
+            },
+            "srp/_20": {
+                requires: ["srp/p/bang/c/wbang/index.css", "xtemplate/runtime", "srp/_21", "srp/_4"]
+            },
+            "srp/_23": {
+                requires: ["srp/_0", "srp/p/bigtabsrp/app.css", "srp/c/icons/btn.css", "srp/c/icons/service.css", "srp/c/icons/supple.css", "srp/c/icons/fest.css", "xtemplate/runtime"]
+            },
+            "srp/_24": {
+                requires: ["srp/_0", "srp/p/find-brand/app.css", "srp/c/icons/btn.css", "srp/c/icons/service.css", "srp/c/icons/supple.css", "srp/c/icons/fest.css", "xtemplate/runtime"]
+            },
+            "srp/_25": {
+                requires: ["srp/p/find-brand/c/brand-detail/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_26": {
+                requires: ["srp/p/find-brand/c/brand-record/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_27": {
+                requires: ["srp/p/find-brand/c/discussion/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_28": {
+                requires: ["srp/p/find-brand/c/evaluate/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_29": {
+                requires: ["srp/p/find-brand/c/header/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_2a": {
+                requires: ["srp/p/find-brand/c/info/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_2b": {
+                requires: ["srp/p/find-brand/c/ranking-list/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_2c": {
+                requires: ["srp/p/find-brand/c/star-product/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_2d": {
+                requires: ["srp/_0", "srp/p/i2i/app.css", "srp/c/icons/btn.css", "srp/c/icons/service.css", "srp/c/icons/supple.css", "srp/c/icons/fest.css", "xtemplate/runtime"]
+            },
+            "srp/_2e": {
+                requires: ["srp/p/i2i/c/recitem/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_2f": {
+                requires: ["srp/p/i2i/c/singleauction/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_2g": {
+                requires: ["srp/p/i2i/c/sortbar/index.css", "ua", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_2h": {
+                requires: ["srp/_0", "srp/c/icons/btn.css", "srp/c/icons/service.css", "srp/c/icons/supple.css", "srp/c/icons/fest.css", "xtemplate/runtime"]
+            },
+            "srp/_2i": {
+                requires: ["srp/_0", "srp/c/icons/btn.css", "srp/c/icons/service.css", "srp/c/icons/supple.css", "srp/c/icons/fest.css", "xtemplate/runtime"]
+            },
+            "srp/_2j": {
+                requires: ["srp/p/mysearch/c/explain/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_2k": {
+                requires: ["srp/p/mysearch/c/grid/index.css", "xtemplate/runtime", "srp/_4", "datalazyload", "io", "srp/_1g"]
+            },
+            "srp/_2l": {
+                requires: ["srp/p/mysearch/c/myblock/index.css", "xtemplate/runtime", "srp/_4", "ua"]
+            },
+            "srp/_2m": {
+                requires: ["srp/p/mysearch/c/nav/index.css", "node", "srp/_1i", "xtemplate/runtime", "srp/_1e", "srp/_4", "srp/p/mysearch/c/nav/breadcrumbs/index.css", "srp/p/mysearch/c/nav/common/index.css", "event", "srp/p/mysearch/c/nav/overlay/index.css"]
+            },
+            "srp/_2n": {
+                requires: ["srp/_0", "srp/c/icons/btn.css", "srp/c/icons/service.css", "srp/c/icons/supple.css", "srp/c/icons/fest.css", "xtemplate/runtime"]
+            },
+            "srp/_2o": {
+                requires: ["srp/p/page0/c/desc/index.css", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/_2p": {
+                requires: ["srp/p/page0/c/itemlist/index.css", "datalazyload", "xtemplate/runtime", "srp/_4"]
+            },
+            "srp/c/app/app-base": {
+                alias: "srp/_0"
+            },
+            "srp/c/app/base": {
+                alias: "srp/_1"
+            },
+            "srp/c/app/env": {
+                alias: "srp/_2"
+            },
+            "srp/c/app/history": {
+                alias: "srp/_3"
+            },
+            "srp/c/app/mod-base": {
+                alias: "srp/_4"
+            },
+            "srp/c/app/requester": {
+                alias: "srp/_5"
+            },
+            "srp/c/app/responsive": {
+                alias: "srp/_6"
+            },
+            "srp/c/libs/history": {
+                alias: "srp/_7"
+            },
+            "srp/c/libs/html2canvas": {
+                alias: "srp/_8"
+            },
+            "srp/c/libs/nprogress/nprogress": {
+                alias: "srp/_9"
+            },
+            "srp/c/ui/apasstips/index": {
+                alias: "srp/_a"
+            },
+            "srp/c/ui/bottomsearch/index": {
+                alias: "srp/_b"
+            },
+            "srp/c/ui/brandbang/index": {
+                alias: "srp/_c"
+            },
+            "srp/c/ui/choosecar/index": {
+                alias: "srp/_d"
+            },
+            "srp/c/ui/debugbar/index": {
+                alias: "srp/_e"
+            },
+            "srp/c/ui/feedback/advice2visual/index": {
+                alias: "srp/_f"
+            },
+            "srp/c/ui/feedback/advice2visual/index.xtpl": {
+                alias: "srp/_g"
+            },
+            "srp/c/ui/feedback/advice2visual/panel": {
+                alias: "srp/_h"
+            },
+            "srp/c/ui/feedback/index": {
+                alias: "srp/_i"
+            },
+            "srp/c/ui/feedback/tpl/index.xtpl": {
+                alias: "srp/_j"
+            },
+            "srp/c/ui/header/index": {
+                alias: "srp/_k"
+            },
+            "srp/c/ui/itemlist/index": {
+                alias: "srp/_l"
+            },
+            "srp/c/ui/menulist/index": {
+                alias: "srp/_m"
+            },
+            "srp/c/ui/nav/index": {
+                alias: "srp/_n"
+            },
+            "srp/c/ui/navtablink/index": {
+                alias: "srp/_o"
+            },
+            "srp/c/ui/noresult/index": {
+                alias: "srp/_p"
+            },
+            "srp/c/ui/p4p/index": {
+                alias: "srp/_q"
+            },
+            "srp/c/ui/pager/index": {
+                alias: "srp/_r"
+            },
+            "srp/c/ui/personalbar/index": {
+                alias: "srp/_s"
+            },
+            "srp/c/ui/phonenav/index": {
+                alias: "srp/_t"
+            },
+            "srp/c/ui/related/index": {
+                alias: "srp/_u"
+            },
+            "srp/c/ui/sc/index": {
+                alias: "srp/_v"
+            },
+            "srp/c/ui/sctabframe/index": {
+                alias: "srp/_10"
+            },
+            "srp/c/ui/shopcombo/index": {
+                alias: "srp/_11"
+            },
+            "srp/c/ui/shopcombotip/index": {
+                alias: "srp/_12"
+            },
+            "srp/c/ui/shopstar/index": {
+                alias: "srp/_13"
+            },
+            "srp/c/ui/sortbar/index": {
+                alias: "srp/_14"
+            },
+            "srp/c/ui/spucombo/index": {
+                alias: "srp/_15"
+            },
+            "srp/c/ui/spuseries/index": {
+                alias: "srp/_16"
+            },
+            "srp/c/ui/supertab/index": {
+                alias: "srp/_17"
+            },
+            "srp/c/ui/tab/index": {
+                alias: "srp/_18"
+            },
+            "srp/c/ui/tips/index": {
+                alias: "srp/_19"
+            },
+            "srp/c/ui/updatebar/index": {
+                alias: "srp/_1a"
+            },
+            "srp/c/ui/vbaby/index": {
+                alias: "srp/_1b"
+            },
+            "srp/c/utils/imgmagic": {
+                alias: "srp/_1c"
+            },
+            "srp/c/utils/logger": {
+                alias: "srp/_1d"
+            },
+            "srp/c/utils/stat": {
+                alias: "srp/_1e"
+            },
+            "srp/c/utils/timing": {
+                alias: "srp/_1f"
+            },
+            "srp/c/utils/utils": {
+                alias: "srp/_1g"
+            },
+            "srp/c/utils/webp": {
+                alias: "srp/_1h"
+            },
+            "srp/c/widgets/baike/index": {
+                alias: "srp/_1i"
+            },
+            "srp/c/widgets/icon-popup/index": {
+                alias: "srp/_1j"
+            },
+            "srp/c/widgets/popup/index": {
+                alias: "srp/_1k"
+            },
+            "srp/c/widgets/shopcard/index": {
+                alias: "srp/_1l"
+            },
+            "srp/p/bang/app": {
+                alias: "srp/_1m"
+            },
+            "srp/p/bang/c/bswitch/index": {
+                alias: "srp/_1n"
+            },
+            "srp/p/bang/c/bswitch/tpl.xtpl": {
+                alias: "srp/_1o"
+            },
+            "srp/p/bang/c/cstyle/index": {
+                alias: "srp/_1p"
+            },
+            "srp/p/bang/c/cstyle/tpl.xtpl": {
+                alias: "srp/_1q"
+            },
+            "srp/p/bang/c/header/index": {
+                alias: "srp/_1r"
+            },
+            "srp/p/bang/c/nav/index": {
+                alias: "srp/_1s"
+            },
+            "srp/p/bang/c/pager/index": {
+                alias: "srp/_1t"
+            },
+            "srp/p/bang/c/tubang/index": {
+                alias: "srp/_1u"
+            },
+            "srp/p/bang/c/tubang/tpl.xtpl": {
+                alias: "srp/_1v"
+            },
+            "srp/p/bang/c/wbang/index": {
+                alias: "srp/_20"
+            },
+            "srp/p/bang/c/wbang/tpl.xtpl": {
+                alias: "srp/_21"
+            },
+            "srp/p/bang/layout.xtpl": {
+                alias: "srp/_22"
+            },
+            "srp/p/bigtabsrp/app": {
+                alias: "srp/_23"
+            },
+            "srp/p/find-brand/app": {
+                alias: "srp/_24"
+            },
+            "srp/p/find-brand/c/brand-detail/index": {
+                alias: "srp/_25"
+            },
+            "srp/p/find-brand/c/brand-record/index": {
+                alias: "srp/_26"
+            },
+            "srp/p/find-brand/c/discussion/index": {
+                alias: "srp/_27"
+            },
+            "srp/p/find-brand/c/evaluate/index": {
+                alias: "srp/_28"
+            },
+            "srp/p/find-brand/c/header/index": {
+                alias: "srp/_29"
+            },
+            "srp/p/find-brand/c/info/index": {
+                alias: "srp/_2a"
+            },
+            "srp/p/find-brand/c/ranking-list/index": {
+                alias: "srp/_2b"
+            },
+            "srp/p/find-brand/c/star-product/index": {
+                alias: "srp/_2c"
+            },
+            "srp/p/i2i/app": {
+                alias: "srp/_2d"
+            },
+            "srp/p/i2i/c/recitem/index": {
+                alias: "srp/_2e"
+            },
+            "srp/p/i2i/c/singleauction/index": {
+                alias: "srp/_2f"
+            },
+            "srp/p/i2i/c/sortbar/index": {
+                alias: "srp/_2g"
+            },
+            "srp/p/mainsrp/app": {
+                alias: "srp/_2h"
+            },
+            "srp/p/mysearch/app": {
+                alias: "srp/_2i"
+            },
+            "srp/p/mysearch/c/explain/index": {
+                alias: "srp/_2j"
+            },
+            "srp/p/mysearch/c/grid/index": {
+                alias: "srp/_2k"
+            },
+            "srp/p/mysearch/c/myblock/index": {
+                alias: "srp/_2l"
+            },
+            "srp/p/mysearch/c/nav/index": {
+                alias: "srp/_2m"
+            },
+            "srp/p/page0/app": {
+                alias: "srp/_2n"
+            },
+            "srp/p/page0/c/desc/index": {
+                alias: "srp/_2o"
+            },
+            "srp/p/page0/c/itemlist/index": {
+                alias: "srp/_2p"
+            }
+        })
+    };
+    var i = {};
+    p.set = function (s, r) {
+        i[s] = r
+    }, p.get = function (s) {
+        return i[s]
+    }
+}(KISSY, this), g_srp_setPageUI("page0", {
+    itemlist: "c/itemlist/",
+    desc: "c/desc/"
+}), g_srp_setPageUI("mysearch", {
+    myblock: "c/myblock/",
+    explain: "c/explain/",
+    nav: "c/nav/",
+    grid: "c/grid/"
+}), g_srp_setPageUI("i2i", {
+    singleauction: "c/singleauction/",
+    sortbar: "c/sortbar/",
+    recitem: "c/recitem/"
+}), g_srp_setPageUI("floor", {
+    floors: "c/floors/"
+}), g_srp_setPageUI("find-brand", {
+    header: "c/header/",
+    "brand-detail": "c/brand-detail/",
+    discussion: "c/discussion/",
+    evaluate: "c/evaluate/",
+    "star-product": "c/star-product/",
+    "brand-record": "c/brand-record/",
+    "ranking-list": "c/ranking-list/",
+    info: "c/info/"
+}), g_srp_setPageUI("bang", {
+    tubang: "c/tubang/",
+    header: "c/header/",
+    cstyle: "c/cstyle/",
+    wbang: "c/wbang/",
+    nav: "c/nav/",
+    pager: "c/pager/",
+    bswitch: "c/bswitch/"
+});
