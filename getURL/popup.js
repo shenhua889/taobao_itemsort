@@ -7,15 +7,21 @@ document.addEventListener('DOMContentLoaded', function() {
 	    var request = new XMLHttpRequest();
 	    request.onreadystatechange = function () {
 	        if (request.readyState == 4 && request.status == 200) {
-	            var responseTXT = request.responseText;
-	            /*renderStatus(url + responseTXT);
-				renderStatus(aaa);*/
+				var json=GetJsonTXT(request.responseText);
+	            renderStatus(json);
+				
 	        }
 	    }
 	    request.open("GET", url, true);
 	    request.send(null);
 	});
 });
+function GetJsonTXT(responseTXT)
+{
+	var reg=responseTXT.match("(?=g_page_config = ).*(?=;)");
+	var json=reg[0].substr(16,reg[0].length-16);
+	return json;
+}
  function getu(callback){
 	var queryInfo = {
     active: true,
