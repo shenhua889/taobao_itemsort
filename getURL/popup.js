@@ -3,8 +3,15 @@ function renderStatus(statusText) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+	//document.getElementById("J_itemlistCont").innerHTML="";
+	//document.getElementById("J_itemlistCont").innerText="123";
+	chrome.browserAction.onClicked.addListener(function(tab) {
+	chrome.tabs.executeScript({
+		code: 'document.body.style.backgroundColor="red"'
+	  });
+	});
 	getu(function(url){
-	    var request = new XMLHttpRequest();
+	    /*var request = new XMLHttpRequest();
 	    request.onreadystatechange = function () {
 	        if (request.readyState == 4 && request.status == 200) {
 				var json=GetJsonTXT(request.responseText);
@@ -13,7 +20,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	        }
 	    }
 	    request.open("GET", url, true);
-	    request.send(null);
+	    request.send(null);*/
+		
 	});
 });
 function GetJsonTXT(responseTXT)
